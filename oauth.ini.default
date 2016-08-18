@@ -1,0 +1,12 @@
+[app]
+scope = identity,account,edit,flair,history,livemanage,modconfig,modflair,modlog,modothers,modposts,modself,modwiki,mysubreddits,privatemessages,read,report,save,submit,subscribe,vote,wikiedit,wikiread
+refreshable = True
+app_key = x-xxxxxxx
+app_secret = xxxxxxxx_xxx
+
+[server]
+server_mode = False
+url = 127.0.0.1
+port = 65010
+redirect_path = authorize_callback
+link_path = oauth
