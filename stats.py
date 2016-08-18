@@ -46,7 +46,15 @@ def checkComments(subreddit):
 		reply = createMessage(players)
 
 		print(reply)
-		comment.reply(reply)
+		try:
+			comment.reply(reply)
+		except praw.errors.Forbidden:
+			print("The bot has been banned from {}".format(subreddit))
+			continue
+		except praw.errors.RateLimitExceeded:
+			print("Rate limit exceeded, skipping comment for now")
+			continue
+
 		cur.execute('INSERT INTO items VALUES(?)', [guid])
         sql.commit()
 
