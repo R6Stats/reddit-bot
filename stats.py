@@ -2,9 +2,15 @@ import sqlite3
 import praw
 import OAuth2Util
 import requests
+import json
+
 
 user_agent = "r6stats by /u/jake0oo0 v0.1"
-subreddits = "jake0oo0"
+
+cfile = open('config.json')
+config = json.load(cfile)
+botuser = config['username']
+subreddits = '+'.join(config['subreddits'])
 
 reply = ""
 def checkComments(subreddit):
@@ -13,8 +19,8 @@ def checkComments(subreddit):
 
 	for comment in comments:
 		guid = comment.id
-		print(comment)
-		if comment.author.name == "R6StatsBot":
+		# print(comment)
+		if comment.author.name == botuser:
 			print("Ignorning own comment")
 			continue
 
@@ -24,7 +30,7 @@ def checkComments(subreddit):
 			continue
 
 		body = comment.body
-		if "u/r6statsbot" not in body.lower():
+		if "u/{}".format(botuser.lower()) not in body.lower():
 			print("Not tagged in the comment")
 			continue
 
@@ -44,17 +50,20 @@ def checkComments(subreddit):
 		cur.execute('INSERT INTO items VALUES(?)', [guid])
         sql.commit()
 
+keys = ['/u/{}'.format(botuser.lower()), 'u/{}'.format(botuser.lower())]
 def extractPlayers(body):
 	body = body.lower()
 	tokens = body.split()
 
-	b = [item for item in range(len(tokens)) if tokens[item] in ['/u/r6statsbot', 'u/r6statsbot']]
+	b = [item for item in range(len(tokens)) if tokens[item] in keys]
 	players = []
 	for index in b:
 		# check that there is even room for username and platform
 		if len(tokens) < (index + 3):
 			continue
+		# username is first arg
 		username = tokens[index + 1]
+		# platform is second arg
 		platform = tokens[index + 2]
 		print("Username: {} Platform: {}".format(username, platform))
 		p = {"username": username, "platform": platform}
@@ -88,7 +97,7 @@ def createMessage(players):
 			message += "Losses|{}|{}\n".format(casual["losses"], ranked["losses"])
 			message += "W/L|{}|{}\n".format(casual["wlr"], ranked["wlr"])
 	message += "^(*Hello, I am a bot!*)\n\n"
-	message += "You can summon me with ```/u/R6StatsBot <username> <platform>```. Data via [R6Stats](https://r6stats.com).\n\n"
+	message += "You can summon me with ```/u/{} <username> <platform>```. Data via [R6Stats](https://r6stats.com).\n\n".format(config['username'])
 	message += "[[Info](https://reddit.com/r/R6Stats)] [[Source](https://github.com/R6Stats/reddit-bot)]"
 	return message
 
@@ -109,7 +118,6 @@ def requestPlayer(username, platform):
 		return None
 	else:
 		return json
-
 
 if __name__ == '__main__':
 	r = praw.Reddit(user_agent)
