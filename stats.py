@@ -117,7 +117,7 @@ def createMessage(players):
 
 def checkSelf():
     bot = r.get_redditor(botuser)
-    for comment in user.get_comments(limit=25):
+    for comment in bot.get_comments(limit=25):
         if comment.score < 1:
             comment.delete()
             print('Comment {} removed due to low score'.format(comment.id))
