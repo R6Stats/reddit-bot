@@ -94,7 +94,7 @@ def createMessage(players):
         if idx > 0:
             message += "\n\n"
         if player is None:
-            message += ("{} ({}): Player not found").format(username, platform)
+            message += ("{} ({}): Player not found\n\n").format(username, platform)
         else:
             stats = player["player"]["stats"]
             actual = player["player"]["username"]
@@ -114,6 +114,13 @@ def createMessage(players):
     message += "[[Info](https://reddit.com/r/R6Stats)] [[Source](https://github.com/R6Stats/reddit-bot)]"
     return message
 
+
+def checkSelf():
+    bot = r.get_redditor(botuser)
+    for comment in user.get_comments(limit=25):
+        if comment.score < 1:
+            comment.delete()
+            print('Comment {} removed due to low score'.format(comment.id))
 
 def getPlatform(plat):
     if plat == "xone":
@@ -144,3 +151,4 @@ if __name__ == '__main__':
     cur.execute('CREATE TABLE IF NOT EXISTS items(id TEXT)')
 
     checkComments(subreddits)
+    checkSelf()
