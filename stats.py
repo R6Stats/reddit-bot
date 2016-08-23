@@ -109,9 +109,10 @@ def createMessage(players):
             message += "Wins|{}|{}\n".format(casual["wins"], ranked["wins"])
             message += "Losses|{}|{}\n".format(casual["losses"], ranked["losses"])
             message += "W/L|{}|{}\n".format(casual["wlr"], ranked["wlr"])
+    message += "\n\n"
     message += "^(*Hello, I am a bot!*)\n\n"
     message += "You can summon me with ```/u/{} <username> <platform>```. Data via [R6Stats](https://r6stats.com).\n\n".format(config['username'])
-    message += "[[Info](https://reddit.com/r/R6Stats)] [[Source](https://github.com/R6Stats/reddit-bot)]"
+    message += "[[Info](https://reddit.com/r/R6Stats)] [[Source](https://github.com/R6Stats/reddit-bot)] [[R6Stats Profile](https://r6stats.com/stats/{}/{}?source=reddit-bot)]".format(platform, actual)
     return message
 
 
